@@ -1,8 +1,8 @@
 { pkgs, inputs, ... }:
 
 {
-  home.username = "user";
-  home.homeDirectory = "/home/user";
+  home.username = "steve";
+  home.homeDirectory = "/home/steve";
 
   home.packages = with pkgs; [
     thunderbird
@@ -10,7 +10,7 @@
     google-chrome
     vscode
     spotify
-    bitwarden
+    bitwarden-desktop
     podman-desktop
     loupe
     # Steam is installed system-wide for udev rules, but we can add utils here if needed.

@@ -32,12 +32,12 @@
   # Power management & Hibernation
   powerManagement.enable = true;
 
-  services.logind = {
-    lidSwitch = "suspend-then-hibernate";
-    extraConfig = ''
-      HandlePowerKey=suspend-then-hibernate
-    '';
-  };
+  #services.logind = {
+    #lidSwitch = "suspend-then-hibernate";
+    #settings.Login = ''
+    #  HandlePowerKey=suspend-then-hibernate
+    #'';
+  #};
 
   systemd.sleep.extraConfig = ''
     HibernateDelaySec=45min

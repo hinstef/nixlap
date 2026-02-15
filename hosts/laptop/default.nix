@@ -18,17 +18,19 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.user = {
+  users.users.steve = {
     isNormalUser = true;
     description = "User";
     extraGroups = [ "networkmanager" "wheel" "video" "input" ];
     shell = pkgs.bash;
+    hashedPassword = "$y$j9T$CrhuM.WqguUcJRHwoQ8hw/$fuffjxq4ayK3G82VvK4qem5N821pR123gpRE9tXxcy.";
+
   };
 
   # Enable Home Manager
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
-    users.user = import ../../modules/home-manager/default.nix;
+    users.steve = import ../../modules/home-manager/default.nix;
     useGlobalPkgs = true;
     useUserPackages = true;
   };
