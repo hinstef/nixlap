@@ -64,11 +64,29 @@ Review `hosts/laptop/hardware-configuration.nix` to ensure filesystems are corre
 
 ### 3. Install
 
+You can install directly from the remote repository.
+
+**Option A: Local Clone (Recommended for customization)**
 Copy this flake to `/mnt/etc/nixos` (or clone it there).
 
 ```bash
 cd /mnt/etc/nixos
 nixos-install --flake .#laptop
+```
+
+**Option B: Remote Install**
+Install directly from GitHub (replace `username/repo` with your actual repository details).
+*Note: You still need to generate and copy the hardware-configuration.nix into the flake structure if you do this, or ensure the remote flake handles your hardware.*
+
+Since the hardware configuration is machine-specific, the recommended approach is to clone the repo to `/mnt/etc/nixos`, generate the hardware config there, and then install.
+
+```bash
+# Clone to /mnt/etc/nixos
+git clone https://github.com/username/repo /mnt/etc/nixos
+# Generate hardware config
+nixos-generate-config --root /mnt --show-hardware-config > /mnt/etc/nixos/hosts/laptop/hardware-configuration.nix
+# Install
+nixos-install --flake /mnt/etc/nixos#laptop
 ```
 
 ### 4. Post-Install
