@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   # Bootloader
@@ -12,6 +12,8 @@
 
   # Splash screen
   boot.plymouth.enable = true;
+
+  hardware.enableAllFirmware = true;
 
   # Initrd systemd for TPM unlock
   boot.initrd.systemd.enable = true;
@@ -33,12 +35,13 @@
   services.fprintd.enable = true;
   # Uncomment the following lines if your fingerprint reader requires a specific TOD driver.
   # You might need to identify your fingerprint reader's model and search for the corresponding Nixpkgs driver.
-  services.fprintd.tod.enable = true;
-  services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix-550a; # Example for Goodix driver
+  # services.fprintd.tod.enable = true;
+  # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix-550a; # Example for Goodix driver
   # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-vfs0090; # Example for vfs0090 driver
   security.pam.services.gdm-password.fprintAuth = true;
-  security.pam.services.sudo.fprintAuth = true;
-
+      security.pam.services.sudo.fprintAuth = true;
+      security.pam.services.login.fprintAuth = lib.mkForce true;
+  
   # Power management & Hibernation
   powerManagement.enable = true;
 

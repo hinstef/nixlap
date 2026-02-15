@@ -19,7 +19,6 @@
     # Ghostty
     inputs.ghostty.packages.${pkgs.system}.default
     gemini-cli
-    git
   ];
 
   dconf.settings = {
@@ -63,10 +62,15 @@
     };
   };
 
-  programs.git.settings = {
+  programs.git = {
     enable = true;
-    userName = "Steffen";
-    userEmail = "steven@posteo.de";
+    settings = {
+      user = {
+        name  = "Steffen";
+        email = "steven@posteo.de";
+      };
+      init.defaultBranch = "main";
+    };
   };
 
   programs.home-manager.enable = true;
