@@ -10,10 +10,14 @@
     gnomeExtensions.dash-to-dock
     gnomeExtensions.blur-my-shell
     gnomeExtensions.caffeine
-    gnomeExtensions.compiz-windows-effect # wiggly
-    # gnomeExtensions.ding # desktop icons ng
-    # gnomeExtensions.search-light # Search Light might not be packaged in nixpkgs yet.
+    gnomeExtensions.gtk4-desktop-icons-ng-ding
+    gnomeExtensions.no-overview
+    gnomeExtensions.search-light
     gnomeExtensions.battery-health-charging
+    gnomeExtensions.hibernate-status-button
+    gnomeExtensions.appindicator
+    refine
+    gnome-tweaks
   ];
 
   # Remove default packages
@@ -21,10 +25,14 @@
     cheese
     gnome-music
     gnome-terminal
+    gnome-initial-setup
     geary
     evince
     totem
   ]);
+
+  # Spacebar file previewer in Nautilus
+  services.gnome.sushi.enable = true;
 
   programs.dconf.enable = true;
 

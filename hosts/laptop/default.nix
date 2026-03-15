@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, settings, ... }:
 
 {
   imports = [
@@ -9,28 +9,24 @@
     ../../modules/nixos/secrets.nix
   ];
 
-  networking.hostName = "laptop"; # Define your hostname.
+  networking.hostName = settings.hostname;
 
-  # Set your time zone.
-  time.timeZone = "America/New_York";
+  time.timeZone = settings.timezone;
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = settings.locale;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.steve = {
+  users.users.${settings.username} = {
     isNormalUser = true;
-    description = "User";
+    description = settings.fullName;
     extraGroups = [ "networkmanager" "wheel" "video" "input" ];
     shell = pkgs.bash;
-    hashedPassword = "$y$j9T$CrhuM.WqguUcJRHwoQ8hw/$fuffjxq4ayK3G82VvK4qem5N821pR123gpRE9tXxcy.";
-
+    hashedPassword = settings.hashedPassword;
   };
 
   # Enable Home Manager
   home-manager = {
-    extraSpecialArgs = { inherit inputs; };
-    users.steve = import ../../modules/home-manager/default.nix;
+    extraSpecialArgs = { inherit inputs settings; };
+    users.${settings.username} = import ../../modules/home-manager/default.nix;
     useGlobalPkgs = true;
     useUserPackages = true;
   };
@@ -68,5 +64,27 @@
     randomizedDelaySec = "45min";
   };
 
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = false;
+    settings = {
+      General = {
+        # Shows battery charge of connected devices on supported
+        Experimental = true;
+        # When enabled other devices can connect faster to us, however
+        # the tradeoff is increased power consumption.
+        FastConnectable = false;
+      };
+      Policy = {
+        # Enable all controllers when they are found. This includes
+        # adapters present on start as well as adapters that are plugged
+        # in later on. Defaults to 'true'.
+        AutoEnable = true;
+      };
+    };
+  };
+
+  # WARNING: Do NOT change this. It is NOT your NixOS version — it controls backward compatibility.
+  # See: https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.11";
 }
