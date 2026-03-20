@@ -13,11 +13,23 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
     ghostty.url = "github:ghostty-org/ghostty";
+
+    plasma-manager.url = "github:nix-community/plasma-manager";
+    plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
+    plasma-manager.inputs.home-manager.follows = "home-manager";
+
+    # Private repo containing settings.nix and hardware-configuration.nix.
+    # Fork or create your own and update this URL before building.
+    # See settings.nix.example for the expected contents.
+    private = {
+      url = "git+ssh://git@github.com/hinstef/nixlap-private";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, nix-flatpak, ghostty, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, sops-nix, nix-flatpak, ghostty, plasma-manager, private, ... }@inputs:
     let
-      settings = import ./settings.nix;
+      settings = import "${private}/settings.nix";
     in
     {
       nixosConfigurations.${settings.hostname} = nixpkgs.lib.nixosSystem {
@@ -27,25 +39,6 @@
           home-manager.nixosModules.home-manager
           sops-nix.nixosModules.sops
           nix-flatpak.nixosModules.nix-flatpak
-          {
-            # Patch Sushi file previewer to use 90% screen height / 75% screen width
-            nixpkgs.overlays = [
-              (final: prev: {
-                sushi = prev.sushi.overrideAttrs (old: {
-                  postPatch = (old.postPatch or "") + ''
-                    substituteInPlace src/ui/mainWindow.js \
-                      --replace-fail \
-                        'return [Math.floor(scaleW * WINDOW_MAX_W),' \
-                        'let scaleFactor = underWayland ? this.get_scale_factor() : 1;
-            return [Math.floor(geometry.width * 0.75 / scaleFactor),' \
-                      --replace-fail \
-                        'Math.floor(scaleH * WINDOW_MAX_H)];' \
-                        'Math.floor(geometry.height * 0.90 / scaleFactor)];'
-                  '';
-                });
-              })
-            ];
-          }
         ];
       };
     };

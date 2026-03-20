@@ -1,3 +1,9 @@
+# NOTE: This repo expects a private repo containing settings.nix and hardware-configuration.nix.
+# Fork or create your own private repo and update the url for the "private" input in flake.nix.
+# Your private repo should contain:
+#   - settings.nix  (copy this file, fill in real values)
+#   - hardware-configuration.nix  (copy from /etc/nixos/ after running nixos-generate-config)
+
 {
   # User account
   username = "your-username";

@@ -6,7 +6,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.kernelPackages = pkgs.linuxPackages_zen;
-  boot.kernelParams = lib.optionals settings.hibernate [ "resume_offset=${settings.resumeOffset}" ];
+  boot.kernelParams = [ "amd_pstate=active" ] ++ lib.optionals settings.hibernate [ "resume_offset=${settings.resumeOffset}" ];
   boot.resumeDevice = lib.mkIf settings.hibernate settings.resumeDevice;
 
   # Splash screen
@@ -31,27 +31,44 @@
   # Fingerprint reader
   services.fprintd.enable = true;
 
-  security.pam.services.gdm-password.fprintAuth = true;
+  security.pam.services.sddm.fprintAuth = true;
   security.pam.services.sudo.fprintAuth = true;
-  # lib.mkForce overrides the default value set by the gdm module
-  security.pam.services.login.fprintAuth = lib.mkForce true;
+  security.pam.services.login.fprintAuth = true;
+
+  # Polkit
+  security.polkit.enable = true;
 
   # Power management
   powerManagement.enable = true;
+  services.power-profiles-daemon.enable = true;
 
-  services.logind = {
-    settings.Login = {
-      HandlePowerKey = if settings.hibernate then "suspend-then-hibernate" else "suspend";
-      HandleLidSwitch = if settings.hibernate then "suspend-then-hibernate" else "suspend";
-    };
+  services.logind.settings.Login = {
+    HandlePowerKey = if settings.hibernate then "suspend-then-hibernate" else "suspend";
+    HandleLidSwitch = if settings.hibernate then "suspend-then-hibernate" else "suspend";
+    HandleLidSwitchExternalPower = if settings.hibernate then "suspend-then-hibernate" else "suspend";
+    LidSwitchIgnoreInhibited = "yes";
   };
 
-  systemd.sleep.extraConfig = lib.mkIf settings.hibernate ''
-    HibernateDelaySec=45min
-    SuspendEstimationSec=60min
-  '';
+  systemd.sleep.settings.Sleep = lib.mkIf settings.hibernate {
+    HibernateDelaySec = "45min";
+    SuspendEstimationSec = "60min";
+  };
 
   services.tailscale.enable = true;
+  services.fwupd.enable = true;
+
+  programs.nix-ld.enable = true;
+
+  # Automatically adjusts process nice levels and scheduling for known apps,
+  # keeps the desktop responsive when something CPU-hungry runs in the background.
+  services.ananicy = {
+    enable = true;
+    package = pkgs.ananicy-cpp;
+  };
+
+  # Distributes hardware interrupts across CPU cores, prevents one core from
+  # handling all I/O on multi-core AMD systems.
+  services.irqbalance.enable = true;
 
   # NOTE: For hibernation to work, you need a swap partition or swapfile large enough to hold RAM.
   # You also need to set `boot.resumeDevice` and `boot.kernelParams` (resume_offset if using swapfile).

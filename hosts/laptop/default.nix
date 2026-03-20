@@ -2,18 +2,21 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
-    ../../modules/nixos/gnome.nix
+    "${inputs.private}/hardware-configuration.nix"
+    ../../modules/nixos/kde.nix
     ../../modules/nixos/features.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix
   ];
 
   networking.hostName = settings.hostname;
+  networking.networkmanager.enable = true;
 
   time.timeZone = settings.timezone;
 
   i18n.defaultLocale = settings.locale;
+
+  users.users.root.hashedPassword = "!";
 
   users.users.${settings.username} = {
     isNormalUser = true;
