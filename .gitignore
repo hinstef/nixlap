@@ -2,5 +2,6 @@ result
 result-*
 .direnv
 CLAUDE.md
+.claude
 settings.nix
 hosts/laptop/hardware-configuration.nix
