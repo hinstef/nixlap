@@ -1,6 +1,32 @@
-{ pkgs, lib, settings, ... }:
+{ pkgs, lib, inputs, settings, ... }:
 
 {
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # Enable flakes
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # Garbage collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
+
+  # Auto upgrade
+  system.autoUpgrade = {
+    enable = true;
+    flake = inputs.self.outPath;
+    flags = [
+      "--update-input"
+      "nixpkgs"
+      "-L" # print build logs
+    ];
+    dates = "02:00";
+    randomizedDelaySec = "45min";
+  };
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10; # Prevent /boot from filling up
   boot.loader.efi.canTouchEfiVariables = true;
@@ -53,6 +79,8 @@
     HibernateDelaySec = "45min";
     SuspendEstimationSec = "60min";
   };
+
+  fonts.packages = with pkgs.nerd-fonts; [ jetbrains-mono ];
 
   services.tailscale.enable = true;
   services.fwupd.enable = true;

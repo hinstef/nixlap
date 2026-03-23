@@ -16,7 +16,7 @@
   timezone = "America/New_York";
   locale = "en_US.UTF-8";
 
-  # Hibernation (requires a swapfile — see modules/nixos/features.nix for setup instructions)
+  # Hibernation (requires a swapfile — see modules/nixos/common.nix for setup instructions)
   # Set to true only after creating a swapfile and finding the resume offset.
   hibernate = false;
   resumeDevice = "/dev/mapper/cryptroot";

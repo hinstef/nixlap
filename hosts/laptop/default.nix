@@ -4,7 +4,7 @@
   imports = [
     "${inputs.private}/hardware-configuration.nix"
     ../../modules/nixos/kde.nix
-    ../../modules/nixos/features.nix
+    ../../modules/nixos/common.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix
   ];
@@ -22,7 +22,7 @@
     isNormalUser = true;
     description = settings.fullName;
     extraGroups = [ "networkmanager" "wheel" "video" "input" ];
-    shell = pkgs.bash;
+    shell = pkgs.zsh;
     hashedPassword = settings.hashedPassword;
   };
 
@@ -34,38 +34,14 @@
     useUserPackages = true;
   };
 
+  programs.zsh.enable = true;
+
   # Enable Steam
   programs.steam.enable = true;
   programs.steam.gamescopeSession.enable = true;
 
   # Enable Podman
   virtualisation.podman.enable = true;
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
-  # Enable flakes
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  # Garbage collection
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-
-  # Auto upgrade
-  system.autoUpgrade = {
-    enable = true;
-    flake = inputs.self.outPath;
-    flags = [
-      "--update-input"
-      "nixpkgs"
-      "-L" # print build logs
-    ];
-    dates = "02:00";
-    randomizedDelaySec = "45min";
-  };
 
   hardware.bluetooth = {
     enable = true;

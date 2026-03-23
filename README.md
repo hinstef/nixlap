@@ -12,7 +12,7 @@ A modular, flake-based NixOS configuration for a laptop featuring KDE Plasma 6 o
 - **Secrets**: Managed via sops-nix.
 - **Performance**: Zen kernel, ananicy-cpp, irqbalance, power-profiles-daemon, amd_pstate=active.
 
-> **Hardware assumption**: This config is tailored for an AMD system. The Zen kernel and `amd_pstate=active` kernel parameter are AMD-specific. Intel users should change `linuxPackages_zen` to `linuxPackages_latest` and remove `amd_pstate=active` from `modules/nixos/features.nix`.
+> **Hardware assumption**: This config is tailored for an AMD system. The Zen kernel and `amd_pstate=active` kernel parameter are AMD-specific. Intel users should change `linuxPackages_zen` to `linuxPackages_latest` and remove `amd_pstate=active` from `modules/nixos/common.nix`.
 
 ## Structure
 
@@ -23,7 +23,7 @@ hosts/laptop/
   default.nix                          # Host config
   hardware-configuration.nix           # Machine-specific (in private repo, not committed)
 modules/nixos/
-  features.nix                         # Boot, kernel, power, TPM, fingerprint, tailscale
+  common.nix                           # Boot, kernel, power, TPM, fingerprint, tailscale
   kde.nix                              # KDE Plasma, SDDM, system packages
   flatpak.nix                          # Declarative flatpak management
   secrets.nix                          # sops-nix secrets
