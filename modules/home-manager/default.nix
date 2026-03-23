@@ -23,6 +23,17 @@
     nextcloud-client
     zellij # terminal multiplexer
     claude-code
+    # Kubernetes
+    kubectl
+    k9s
+    helm
+    # Containers
+    podman-compose
+    # Python
+    uv
+    ruff
+    # Data
+    jq
   ];
 
   programs.zsh = {
