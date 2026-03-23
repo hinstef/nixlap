@@ -104,22 +104,14 @@ cd /mnt/etc/nixos
 nixos-install --flake .#laptop
 ```
 
-### 4. Update stateVersion
+> `system.stateVersion` is in `hosts/laptop/default.nix` and `home.stateVersion` is in `modules/home-manager/default.nix`. Both are set to `"25.11"` — update them to your current NixOS release if installing fresh.
 
-`system.stateVersion` in `hosts/laptop/default.nix` and `home.stateVersion` in `modules/home-manager/default.nix` are set to `"25.11"`. **Do not change these to match your NixOS version** — they should reflect the version at the time of your initial install and stay fixed after that. If you are installing fresh today, update them to your current NixOS release.
-
-### 5. Post-Install
+### 4. Post-Install
 
 #### TPM Auto-Unlock
 
 ```bash
 sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+2 /dev/nvme0n1p2
-```
-
-#### Fingerprint
-
-```bash
-fprintd-enroll
 ```
 
 #### Secrets with sops-nix

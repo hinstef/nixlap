@@ -4,4 +4,3 @@ result-*
 CLAUDE.md
 .claude
 settings.nix
-hosts/laptop/hardware-configuration.nix
