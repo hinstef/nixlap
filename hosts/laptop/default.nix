@@ -1,37 +1,40 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, settings, ... }:
 
 {
   imports = [
-    ./hardware-configuration.nix
-    ../../modules/nixos/gnome.nix
-    ../../modules/nixos/features.nix
+    "${inputs.private}/hardware-configuration.nix"
+    ../../modules/nixos/kde.nix
+    ../../modules/nixos/common.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix
   ];
 
-  networking.hostName = "laptop"; # Define your hostname.
+  networking.hostName = settings.hostname;
+  networking.networkmanager.enable = true;
 
-  # Set your time zone.
-  time.timeZone = "UTC";
+  time.timeZone = settings.timezone;
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = settings.locale;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.user = {
+  users.users.root.hashedPassword = "!";
+
+  users.users.${settings.username} = {
     isNormalUser = true;
-    description = "User";
+    description = settings.fullName;
     extraGroups = [ "networkmanager" "wheel" "video" "input" ];
-    shell = pkgs.bash;
+    shell = pkgs.zsh;
+    hashedPassword = settings.hashedPassword;
   };
 
   # Enable Home Manager
   home-manager = {
-    extraSpecialArgs = { inherit inputs; };
-    users.user = import ../../modules/home-manager/default.nix;
+    extraSpecialArgs = { inherit inputs settings; };
+    users.${settings.username} = import ../../modules/home-manager/default.nix;
     useGlobalPkgs = true;
     useUserPackages = true;
   };
+
+  programs.zsh.enable = true;
 
   # Enable Steam
   programs.steam.enable = true;
@@ -40,31 +43,21 @@
   # Enable Podman
   virtualisation.podman.enable = true;
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
-  # Enable flakes
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  # Garbage collection
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-
-  # Auto upgrade
-  system.autoUpgrade = {
+  hardware.bluetooth = {
     enable = true;
-    flake = inputs.self.outPath;
-    flags = [
-      "--update-input"
-      "nixpkgs"
-      "-L" # print build logs
-    ];
-    dates = "02:00";
-    randomizedDelaySec = "45min";
+    powerOnBoot = false;
+    settings = {
+      General = {
+        # Shows battery charge of connected devices on supported
+        Experimental = true;
+        # When enabled other devices can connect faster to us, however
+        # the tradeoff is increased power consumption.
+        FastConnectable = false;
+      };
+    };
   };
 
+  # WARNING: Do NOT change this. It is NOT your NixOS version — it controls backward compatibility.
+  # See: https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.11";
 }
