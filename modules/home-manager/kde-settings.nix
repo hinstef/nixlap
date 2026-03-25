@@ -3,26 +3,6 @@
 {
   imports = [ inputs.plasma-manager.homeModules.plasma-manager ];
 
-  home.file.".local/share/kxmlgui5/dolphin/dolphinui.rc".text = ''
-    <?xml version="1.0"?>
-    <!DOCTYPE gui SYSTEM "kpartgui.dtd">
-    <gui name="dolphin" version="48">
-        <ToolBar noMerge="1" name="mainToolBar">
-            <text context="@title:menu">Main Toolbar</text>
-            <Action name="go_back" />
-            <Action name="go_forward" />
-            <Action name="view_settings" />
-            <Action name="url_navigators" />
-            <Action name="split_view" />
-            <Action name="split_stash" />
-            <Action name="toggle_search" />
-            <Action name="new_menu" />
-            <Action name="movetotrash" />
-            <Action name="hamburger_menu" />
-        </ToolBar>
-    </gui>
-  '';
-
   programs.plasma = {
     enable = true;
 
