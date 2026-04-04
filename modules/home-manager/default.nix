@@ -22,8 +22,7 @@
     trayscale
     nextcloud-client
     zellij # terminal multiplexer
-    # Re-enable: Version was pulled from NPM
-    # claude-code
+    claude-code
     # Kubernetes
     kubectl
     k9s
