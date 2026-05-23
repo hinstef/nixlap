@@ -7,15 +7,16 @@
     ../../modules/nixos/common.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix
-    # ../../modules/nixos/ai-sysadmin.nix  # v1 — replaced by nixadmin.nix
-    ../../modules/nixos/nixadmin.nix
+    # ../../modules/nixos/ai-sysadmin.nix  # v1 — kept for reference, not imported
+    # nixadmin module is now provided by the nixadmin flake input
   ];
 
   services.nixadmin = {
-    enable = true;
-    user   = settings.username;
-    # model defaults to "qwen2.5-coder:7b" — pull it after first switch:
-    #   podman exec nixadmin-ollama ollama pull qwen2.5-coder:7b
+    enable   = true;
+    user     = settings.username;
+    flakeDir = "/home/${settings.username}/workspace/nixlap";
+    hostname = settings.hostname;
+    # model defaults to "qwen2.5-coder:7b"
   };
 
   networking.hostName = settings.hostname;

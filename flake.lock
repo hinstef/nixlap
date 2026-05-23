@@ -115,6 +115,26 @@
         "type": "github"
       }
     },
+    "nixadmin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779511565,
+        "narHash": "sha256-IxbBDwlIdWKYnugqtj5RzhlaplJehWY6gWcXmoD7Xo8=",
+        "owner": "hinstef",
+        "repo": "nixadmin",
+        "rev": "9b931d46563028596608d76d813a760da1d53415",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hinstef",
+        "repo": "nixadmin",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1770537093,
@@ -189,6 +209,7 @@
         "home-manager": "home-manager_2",
         "nix-flatpak": "nix-flatpak",
         "nix-pi": "nix-pi",
+        "nixadmin": "nixadmin",
         "nixpkgs": "nixpkgs_2",
         "plasma-manager": "plasma-manager",
         "private": "private",
