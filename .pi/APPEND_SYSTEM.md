@@ -61,6 +61,32 @@ systemctl restart <service>
 systemctl --user restart nixadmin-ollama
 ```
 
+### What apps are installed?
+
+```bash
+# User packages (home-manager):
+grep -A 30 'home.packages' /home/steve/workspace/nixlap/modules/home-manager/default.nix
+
+# Flatpaks:
+flatpak list --app --columns=name,application
+
+# System packages in a specific module:
+grep 'pkgs\.' /home/steve/workspace/nixlap/modules/nixos/common.nix | grep -v '#'
+```
+
+Do NOT list `/run/current-system/sw/bin` — that dumps 1000+ system binaries and is not useful.
+
+### Disk usage
+
+```bash
+df -h --output=source,size,used,avail,pcent,target | grep -v tmpfs | grep -v devtmpfs
+```
+
+### Large command output
+
+If a command might produce many lines, always pipe through `head -50` or `grep` first.
+Do NOT run a command that dumps hundreds of lines and then lose context.
+
 ### GPU / VRAM
 
 ```bash
