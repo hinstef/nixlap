@@ -17,6 +17,7 @@
     usbutils
     # Steam is installed system-wide for udev rules, but we can add utils here if needed.
     inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.nix-pi.packages.${pkgs.stdenv.hostPlatform.system}.default
     gemini-cli
     signal-desktop
     trayscale
@@ -30,14 +31,31 @@
     # Containers
     podman-compose
     # Python
+    python3
+    tree
     uv
     ruff
     # Data
     jq
+    stirling-pdf-desktop
   ];
+
+  home.file.".pi/agent/models.json".text = builtins.toJSON {
+    providers = {
+      ollama = {
+        baseUrl = "http://localhost:11434/v1";
+        api     = "openai-responses";
+        apiKey  = "ollama";
+        models  = [{ id = "qwen2.5-coder:7b"; }];
+      };
+    };
+  };
 
   programs.zsh = {
     enable = true;
+    shellAliases = {
+      nixadmin = "cd /home/steve/workspace/nixlap && pi";
+    };
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";

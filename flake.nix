@@ -18,6 +18,9 @@
     plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
     plasma-manager.inputs.home-manager.follows = "home-manager";
 
+    nix-pi.url = "github:hinstef/nix-pi";
+    nix-pi.inputs.nixpkgs.follows = "nixpkgs";
+
     # Private repo containing settings.nix and hardware-configuration.nix.
     # Fork or create your own and update this URL before building.
     # See settings.nix.example for the expected contents.
@@ -27,7 +30,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, nix-flatpak, ghostty, plasma-manager, private, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, sops-nix, nix-flatpak, ghostty, plasma-manager, nix-pi, private, ... }@inputs:
     let
       settings = import "${private}/settings.nix";
     in

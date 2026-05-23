@@ -7,7 +7,16 @@
     ../../modules/nixos/common.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix
+    # ../../modules/nixos/ai-sysadmin.nix  # v1 — replaced by nixadmin.nix
+    ../../modules/nixos/nixadmin.nix
   ];
+
+  services.nixadmin = {
+    enable = true;
+    user   = settings.username;
+    # model defaults to "qwen2.5-coder:7b" — pull it after first switch:
+    #   podman exec nixadmin-ollama ollama pull qwen2.5-coder:7b
+  };
 
   networking.hostName = settings.hostname;
   networking.networkmanager.enable = true;
