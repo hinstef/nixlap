@@ -38,6 +38,11 @@ Actions: `test` (dry-run), `switch` (apply), `revert` (rollback to previous gene
 
 For a plain rebuild: run `test` first, then `switch` if it passes. No git involvement.
 
+If you get `PermissionError` on the socket, wrap with `sg nixadmin`:
+```bash
+sg nixadmin -c 'python3 -c "..."'
+```
+
 ### Check a service
 
 ```bash
