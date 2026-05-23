@@ -46,7 +46,7 @@
         baseUrl = "http://localhost:11434/v1";
         api     = "openai-responses";
         apiKey  = "ollama";
-        models  = [{ id = "qwen-tool"; } { id = "llama3.1:8b"; } { id = "qwen2.5-coder:14b"; }];
+        models  = [{ id = "llama3.1:8b"; } { id = "qwen2.5-coder:14b"; } { id = "qwen-tool"; }];
       };
     };
   };
