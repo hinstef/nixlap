@@ -122,11 +122,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779512389,
-        "narHash": "sha256-DOd6le6tdcBAefT7yGiNlEfo7RoEIELggYLleWLUd7g=",
+        "lastModified": 1779512619,
+        "narHash": "sha256-Oxe/zDsmH2MozyxF+CcJvU/w3q6EJBk8nJNNc9m2hzE=",
         "owner": "hinstef",
         "repo": "nixadmin",
-        "rev": "1abf3de7bbbc58e09ae8d8a327d504bc02ee07b7",
+        "rev": "2f21bd2a4e42e48be96eb877bab0373b90a58bb1",
         "type": "github"
       },
       "original": {

@@ -34,16 +34,51 @@ pi gives you **read, bash, edit, write** tools built-in. Use them freely.
 - Storage: Btrfs + LUKS encryption, TPM unlock
 - Kernel: linuxPackages_zen
 
-## Rebuild workflow (no sudo required)
+---
 
-Rebuilds go through a privileged Unix socket. Use this Python snippet in bash:
+## Scope of self-modification
+
+You may only modify files inside **`/home/steve/workspace/nixlap`** — the
+per-machine configuration for this laptop.
+
+You must NOT modify:
+- `/home/steve/workspace/nix-nixadmin` — this is the upstream nixadmin module,
+  shared and versioned independently. Changes there affect all machines using it.
+- `/home/steve/workspace/nix-pi` — upstream pi packaging flake.
+- Any other external flake input.
+
+If something in the nixadmin module needs changing, tell the user and let them
+decide whether to fork or upstream it. Do not edit it yourself.
+
+---
+
+## Self-modification protocol
+
+When you propose a config change and the user agrees, follow this exact sequence.
+Git is the safety net — every change is reversible.
+
+### Step 1 — snapshot current state
+
+Before touching any file:
+
+```bash
+cd /home/steve/workspace/nixlap
+git add -A
+git stash push -m "pre: <short description of what you're about to do>"
+```
+
+### Step 2 — make the changes
+
+Edit files normally with your write/edit tools.
+
+### Step 3 — test (build without activating)
 
 ```bash
 python3 -c "
 import socket, json, sys
 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 sock.connect('/run/nixadmin-helper.sock')
-sock.sendall(json.dumps({'action': 'ACTION'}).encode())
+sock.sendall(json.dumps({'action': 'test'}).encode())
 sock.shutdown(socket.SHUT_WR)
 buf = b''
 while True:
@@ -59,21 +94,92 @@ while True:
 "
 ```
 
-Replace `ACTION` with:
-- `test` — dry-run (build without activating)
-- `switch` — build and activate
-- `revert` — roll back to previous generation
+### Step 4a — test FAILED → auto-revert
 
-Always `test` before `switch`. Never edit `hardware-configuration.nix`.
+```bash
+cd /home/steve/workspace/nixlap
+git checkout -- .          # discard file changes
+git stash drop             # discard the snapshot (files are clean again)
+```
+
+Tell the user what failed and what you tried. Do not apply the change.
+
+### Step 4b — test PASSED → ask user, then switch
+
+Tell the user what the change does and ask for confirmation before switching.
+If they confirm:
+
+```bash
+python3 -c "
+import socket, json, sys
+sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+sock.connect('/run/nixadmin-helper.sock')
+sock.sendall(json.dumps({'action': 'switch'}).encode())
+sock.shutdown(socket.SHUT_WR)
+buf = b''
+while True:
+    chunk = sock.recv(4096)
+    if not chunk: break
+    buf += chunk
+    while b'\n' in buf:
+        line, buf = buf.split(b'\n', 1)
+        if not line.strip(): continue
+        msg = json.loads(line)
+        if 'stream' in msg: sys.stdout.write(msg['stream']); sys.stdout.flush()
+        if 'exit' in msg: sys.exit(msg['exit'])
+"
+```
+
+If switch succeeds, commit the change:
+
+```bash
+cd /home/steve/workspace/nixlap
+git stash drop             # discard the pre-change snapshot (no longer needed)
+git add -A
+git commit -m "feat: <description of what was changed and why>"
+```
+
+### Step 5 — user wants to undo after a switch
+
+Two layers of rollback are available:
+
+**Layer 1 — OS rollback** (fast, reverts the running system immediately):
+```bash
+python3 -c "
+import socket, json, sys
+sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+sock.connect('/run/nixadmin-helper.sock')
+sock.sendall(json.dumps({'action': 'revert'}).encode())
+sock.shutdown(socket.SHUT_WR)
+buf = b''
+while True:
+    chunk = sock.recv(4096)
+    if not chunk: break
+    buf += chunk
+    while b'\n' in buf:
+        line, buf = buf.split(b'\n', 1)
+        if not line.strip(): continue
+        msg = json.loads(line)
+        if 'stream' in msg: sys.stdout.write(msg['stream']); sys.stdout.flush()
+        if 'exit' in msg: sys.exit(msg['exit'])
+"
+```
+
+**Layer 2 — git rollback** (restores the config files to match):
+```bash
+cd /home/steve/workspace/nixlap
+git revert HEAD --no-edit
+```
+
+Always do both layers together so the files and the running system stay in sync.
+
+---
 
 ## Systemd — logs and service management
 
 ```bash
 # View logs for a service
 journalctl -u <service> -n 50 --no-pager
-
-# Follow logs live
-journalctl -u <service> -f
 
 # Check service status
 systemctl status <service>
@@ -125,3 +231,4 @@ and why — write it down:
 - Never edit `hardware-configuration.nix` (machine-generated)
 - Be careful with boot, LUKS, TPM, PAM — ask before applying
 - Always `test` before `switch`
+- Always snapshot with `git stash` before editing files
