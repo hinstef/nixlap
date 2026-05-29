@@ -1,19 +1,26 @@
 { pkgs, inputs, settings, ... }:
 
 {
-  imports = [ ./kde-settings.nix ];
+  imports = [ ./cosmic-settings.nix ];
 
   home.username = settings.username;
   home.homeDirectory = "/home/${settings.username}";
 
   home.packages = with pkgs; [
+    (writeShellScriptBin "nixadmin-apps" ''
+      echo "=== Nix packages ==="
+      grep -E '^\s+[a-z][a-zA-Z0-9_.-]+\s*$' /home/steve/workspace/nixlap/modules/home-manager/default.nix \
+        | sed 's/^\s*//'
+      echo ""
+      echo "=== Flatpak apps ==="
+      flatpak list --app --columns=name,application
+    '')
     thunderbird
     firefox
     google-chrome
     vscode
     spotify
     podman-desktop
-    kdePackages.gwenview
     usbutils
     # Steam is installed system-wide for udev rules, but we can add utils here if needed.
     inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
@@ -38,13 +45,14 @@
     # Data
     jq
     stirling-pdf-desktop
+    rendercv
   ];
 
   home.file.".pi/agent/models.json".text = builtins.toJSON {
     providers = {
       ollama = {
         baseUrl = "http://localhost:11434/v1";
-        api     = "openai-responses";
+        api     = "openai-completions";
         apiKey  = "ollama";
         models  = [{ id = "llama3.1:8b"; } { id = "qwen2.5-coder:14b"; } { id = "qwen-tool"; }];
       };
@@ -54,7 +62,7 @@
   programs.zsh = {
     enable = true;
     shellAliases = {
-      nixadmin = "cd /home/steve/workspace/nixlap && pi";
+      nixadmin = "cd /home/steve/workspace/nixlap && pi --model ollama/llama3.1:8b";
     };
     oh-my-zsh = {
       enable = true;

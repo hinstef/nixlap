@@ -3,7 +3,7 @@
 {
   imports = [
     "${inputs.private}/hardware-configuration.nix"
-    ../../modules/nixos/kde.nix
+    ../../modules/nixos/cosmic.nix
     ../../modules/nixos/common.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix

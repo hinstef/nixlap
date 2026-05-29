@@ -3,6 +3,10 @@
 {
   imports = [ inputs.plasma-manager.homeModules.plasma-manager ];
 
+  home.packages = with pkgs; [
+    kdePackages.gwenview
+  ];
+
   programs.plasma = {
     enable = true;
 
