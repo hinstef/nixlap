@@ -8,6 +8,7 @@
     "com.github.tchx84.Flatseal"
     "org.gimp.GIMP"
     "com.bitwarden.desktop"
+    "org.freedesktop.Platform//24.08"
   ];
 
   services.flatpak.update.onActivation = true;

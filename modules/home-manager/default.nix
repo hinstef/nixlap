@@ -27,7 +27,6 @@
     inputs.nix-pi.packages.${pkgs.stdenv.hostPlatform.system}.default
     gemini-cli
     signal-desktop
-    trayscale
     nextcloud-client
     zellij # terminal multiplexer
     claude-code
