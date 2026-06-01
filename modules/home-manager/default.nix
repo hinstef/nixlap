@@ -45,24 +45,12 @@
     jq
     stirling-pdf-desktop
     rendercv
+    mission-center
   ];
-
-  home.file.".pi/agent/models.json".text = builtins.toJSON {
-    providers = {
-      ollama = {
-        baseUrl = "http://localhost:11434/v1";
-        api     = "openai-completions";
-        apiKey  = "ollama";
-        models  = [{ id = "llama3.1:8b"; } { id = "qwen2.5-coder:14b"; } { id = "qwen-tool"; }];
-      };
-    };
-  };
 
   programs.zsh = {
     enable = true;
-    shellAliases = {
-      nixadmin = "cd /home/steve/workspace/nixlap && pi --model ollama/llama3.1:8b";
-    };
+    shellAliases = {};
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
