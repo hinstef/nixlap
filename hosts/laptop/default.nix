@@ -23,7 +23,7 @@
     flakeDir = "/home/${settings.username}/workspace/nixlap";
     hostname = settings.hostname;
     tier     = "cloud";           # "cloud" | "remote" | "local"
-    local.model = "qwen3-tool:latest";
+    local.model = "gemma4:12b";
     # remote.baseUrl = "http://homeserver:11434/v1";
     # remote.model   = "llama3.3:70b";
     # cloud.model defaults to "claude-sonnet-4-5"
