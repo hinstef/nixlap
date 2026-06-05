@@ -12,8 +12,6 @@
 
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
-    ghostty.url = "github:ghostty-org/ghostty";
-
     plasma-manager.url = "github:nix-community/plasma-manager";
     plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
     plasma-manager.inputs.home-manager.follows = "home-manager";
@@ -24,6 +22,10 @@
     nixadmin.url = "github:hinstef/nixadmin";
     nixadmin.inputs.nixpkgs.follows = "nixpkgs";
 
+    # Nixpkgs master — used only to pull a newer Ollama than unstable has packaged.
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
+    nixpkgs-master.inputs = {};  # no follows — intentionally unpinned
+
     # Private repo containing settings.nix and hardware-configuration.nix.
     # Fork or create your own and update this URL before building.
     # See settings.nix.example for the expected contents.
@@ -33,7 +35,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, nix-flatpak, ghostty, plasma-manager, nix-pi, nixadmin, private, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, sops-nix, nix-flatpak, plasma-manager, nix-pi, nixadmin, nixpkgs-master, private, ... }@inputs:
     let
       settings = import "${private}/settings.nix";
     in

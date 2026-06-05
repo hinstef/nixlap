@@ -1,6 +1,12 @@
 { pkgs, inputs, settings, ... }:
 
 {
+  # Pull ollama-vulkan from nixpkgs master (0.30.x) — unstable is still on 0.24.
+  # Only this one package is sourced from master; everything else stays on unstable.
+  nixpkgs.overlays = [(final: prev: {
+    ollama-vulkan = (import inputs.nixpkgs-master { system = final.system; }).ollama-vulkan;
+  })];
+
   imports = [
     "${inputs.private}/hardware-configuration.nix"
     ../../modules/nixos/cosmic.nix
@@ -16,7 +22,7 @@
     user     = settings.username;
     flakeDir = "/home/${settings.username}/workspace/nixlap";
     hostname = settings.hostname;
-    tier     = "local";           # "cloud" | "remote" | "local"
+    tier     = "cloud";           # "cloud" | "remote" | "local"
     local.model = "qwen3-tool:latest";
     # remote.baseUrl = "http://homeserver:11434/v1";
     # remote.model   = "llama3.3:70b";
