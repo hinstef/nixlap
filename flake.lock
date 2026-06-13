@@ -62,15 +62,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1781303050,
-        "narHash": "sha256-RlTYIO+RR9OtS5VT6D8hsZX3Vl7FpClJOOfxLNLsTAE=",
+        "lastModified": 1781363441,
+        "narHash": "sha256-wfov5f9IAuDTFwTdAhmd/2bJ4Q0MF6dzGJHdasAZ5eU=",
         "owner": "hinstef",
         "repo": "nixadmin",
-        "rev": "ffdb65b4374ad86b0af8f1225f600e6f32d9c7be",
+        "rev": "a49e31eb572415562f6e3f2291c78c23db966a6d",
         "type": "github"
       },
       "original": {
         "owner": "hinstef",
+        "ref": "feat/v3-daemon",
         "repo": "nixadmin",
         "type": "github"
       }

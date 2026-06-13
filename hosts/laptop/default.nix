@@ -18,15 +18,14 @@
   ];
 
   services.nixadmin = {
-    enable   = true;
-    user     = settings.username;
-    flakeDir = "/home/${settings.username}/workspace/nixlap";
-    hostname = settings.hostname;
-    tier     = "cloud";           # "cloud" | "remote" | "local"
-    local.model = "gemma4:12b";
-    # remote.baseUrl = "http://homeserver:11434/v1";
-    # remote.model   = "llama3.3:70b";
-    # cloud.model defaults to "claude-sonnet-4-5"
+    enable       = true;
+    user         = settings.username;
+    flakeDir     = "/home/${settings.username}/workspace/nixlap";
+    hostname     = settings.hostname;
+    defaultChain = "local";          # local chain is proven; remote needs Hermes/API
+    local.model  = "qwen2.5:3b";
+    # remote.model = "claude-sonnet-4-5";  # used once a Hermes proxy / API base is set
+    # remote.base  = "http://localhost:4000";
   };
 
   networking.hostName = settings.hostname;
