@@ -24,6 +24,9 @@
     hostname     = settings.hostname;
     defaultChain = "local";          # local chain is proven; remote needs Hermes/API
     local.model  = "qwen2.5:3b";
+    # Extra modules (system, power, performance, bluetooth, updates, security)
+    # discovered via entry points from the nixadmin-extras package.
+    extraModules = [ inputs.nixadmin.packages.${pkgs.system}.nixadmin-extras ];
     # remote.model = "claude-sonnet-4-5";  # used once a Hermes proxy / API base is set
     # remote.base  = "http://localhost:4000";
   };
