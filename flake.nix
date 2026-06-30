@@ -19,7 +19,7 @@
     nix-pi.url = "github:hinstef/nix-pi";
     nix-pi.inputs.nixpkgs.follows = "nixpkgs";
 
-    nixadmin.url = "github:hinstef/nixadmin/feat/v3-daemon";
+    nixadmin.url = "github:hinstef/nixadmin/main";
     nixadmin.inputs.nixpkgs.follows = "nixpkgs";
 
     # Nixpkgs master — used only to pull a newer Ollama than unstable has packaged.
