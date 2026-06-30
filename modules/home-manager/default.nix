@@ -23,7 +23,6 @@
     podman-desktop
     usbutils
     # Steam is installed system-wide for udev rules, but we can add utils here if needed.
-    inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.nix-pi.packages.${pkgs.stdenv.hostPlatform.system}.default
     gemini-cli
     signal-desktop
@@ -46,6 +45,7 @@
     stirling-pdf-desktop
     rendercv
     mission-center
+    gnome-disk-utility
   ];
 
   programs.zsh = {

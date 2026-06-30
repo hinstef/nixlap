@@ -15,6 +15,18 @@
 
   security.pam.services.cosmic-greeter.rules.auth.fprintd.args = [ "max-tries=3" ];
 
+  services.system76-scheduler.enable = true;
+
+  services.howdy = {
+    enable = true;
+    settings.video = {
+      device_path = "/dev/video2";
+      dark_threshold = 100;
+    };
+  };
+
+  services.linux-enable-ir-emitter.enable = true;
+
   services.libinput.touchpad = {
     naturalScrolling = false;
     scrollMethod = "twofinger";
