@@ -87,13 +87,6 @@
 
   programs.nix-ld.enable = true;
 
-  # Automatically adjusts process nice levels and scheduling for known apps,
-  # keeps the desktop responsive when something CPU-hungry runs in the background.
-  services.ananicy = {
-    enable = true;
-    package = pkgs.ananicy-cpp;
-  };
-
   # Distributes hardware interrupts across CPU cores, prevents one core from
   # handling all I/O on multi-core AMD systems.
   services.irqbalance.enable = true;
