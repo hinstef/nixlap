@@ -5,8 +5,7 @@
     kdePackages.partitionmanager
   ];
 
-  services.displayManager.sddm.enable = true;
-  services.displayManager.sddm.wayland.enable = true;
+  services.displayManager.plasma-login-manager.enable = true;
   services.desktopManager.plasma6.enable = true;
 
   services.libinput.touchpad.naturalScrolling = false;

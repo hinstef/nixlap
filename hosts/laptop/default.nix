@@ -1,13 +1,35 @@
 { pkgs, inputs, settings, ... }:
 
 {
+  # Pull ollama-vulkan from nixpkgs master (0.30.x) — unstable is still on 0.24.
+  # Only this one package is sourced from master; everything else stays on unstable.
+  nixpkgs.overlays = [(final: prev: {
+    ollama-vulkan = (import inputs.nixpkgs-master { system = final.system; }).ollama-vulkan;
+  })];
+
   imports = [
     "${inputs.private}/hardware-configuration.nix"
-    ../../modules/nixos/kde.nix
+    ../../modules/nixos/cosmic.nix
     ../../modules/nixos/common.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix
+    # ../../modules/nixos/ai-sysadmin.nix  # v1 — kept for reference, not imported
+    # nixadmin module is now provided by the nixadmin flake input
   ];
+
+  services.nixadmin = {
+    enable       = true;
+    user         = settings.username;
+    flakeDir     = "/home/${settings.username}/workspace/nixlap";
+    hostname     = settings.hostname;
+    defaultChain = "local";          # local chain is proven; remote needs Hermes/API
+    local.model  = "qwen2.5:3b";
+    # Extra modules (system, power, performance, bluetooth, updates, security)
+    # discovered via entry points from the nixadmin-extras package.
+    extraModules = [ inputs.nixadmin.packages.${pkgs.system}.nixadmin-extras ];
+    # remote.model = "claude-sonnet-4-5";  # used once a Hermes proxy / API base is set
+    # remote.base  = "http://localhost:4000";
+  };
 
   networking.hostName = settings.hostname;
   networking.networkmanager.enable = true;

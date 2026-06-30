@@ -1,25 +1,32 @@
 { pkgs, inputs, settings, ... }:
 
 {
-  imports = [ ./kde-settings.nix ];
+  imports = [ ./cosmic-settings.nix ];
 
   home.username = settings.username;
   home.homeDirectory = "/home/${settings.username}";
 
   home.packages = with pkgs; [
+    (writeShellScriptBin "nixadmin-apps" ''
+      echo "=== Nix packages ==="
+      grep -E '^\s+[a-z][a-zA-Z0-9_.-]+\s*$' /home/steve/workspace/nixlap/modules/home-manager/default.nix \
+        | sed 's/^\s*//'
+      echo ""
+      echo "=== Flatpak apps ==="
+      flatpak list --app --columns=name,application
+    '')
     thunderbird
     firefox
     google-chrome
     vscode
     spotify
     podman-desktop
-    kdePackages.gwenview
     usbutils
     # Steam is installed system-wide for udev rules, but we can add utils here if needed.
     inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.nix-pi.packages.${pkgs.stdenv.hostPlatform.system}.default
     gemini-cli
     signal-desktop
-    trayscale
     nextcloud-client
     zellij # terminal multiplexer
     claude-code
@@ -30,14 +37,20 @@
     # Containers
     podman-compose
     # Python
+    python3
+    tree
     uv
     ruff
     # Data
     jq
+    stirling-pdf-desktop
+    rendercv
+    mission-center
   ];
 
   programs.zsh = {
     enable = true;
+    shellAliases = {};
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";

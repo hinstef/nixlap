@@ -1,10 +1,16 @@
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 
 {
   imports = [ inputs.plasma-manager.homeModules.plasma-manager ];
 
+  home.packages = with pkgs; [
+    kdePackages.gwenview
+  ];
+
   programs.plasma = {
     enable = true;
+
+    workspace.wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Mountain/contents/images/5120x2880.png";
 
     kwin.nightLight = {
       enable = true;
