@@ -25,6 +25,7 @@
     # Steam is installed system-wide for udev rules, but we can add utils here if needed.
     inputs.nix-pi.packages.${pkgs.stdenv.hostPlatform.system}.default
     gemini-cli
+    beads # bd — git-backed issue tracker
     signal-desktop
     nextcloud-client
     zellij # terminal multiplexer
