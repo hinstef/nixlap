@@ -1,0 +1,86 @@
+{ pkgs, inputs, settings, ... }:
+
+{
+  # Pull ollama-vulkan from nixpkgs master (0.30.x) — unstable is still on 0.24.
+  # Only this one package is sourced from master; everything else stays on unstable.
+  nixpkgs.overlays = [(final: prev: {
+    ollama-vulkan = (import inputs.nixpkgs-master { system = final.system; }).ollama-vulkan;
+  })];
+
+  imports = [
+    "${inputs.private}/hardware-configuration.nix"
+    ../../modules/nixos/cosmic.nix
+    ../../modules/nixos/common.nix
+    ../../modules/nixos/flatpak.nix
+    ../../modules/nixos/secrets.nix
+    ../../modules/nixos/claude-rebuild.nix
+    # ../../modules/nixos/ai-sysadmin.nix  # v1 — kept for reference, not imported
+    # nixadmin module is now provided by the nixadmin flake input
+  ];
+
+  services.nixadmin = {
+    enable       = true;
+    user         = settings.username;
+    flakeDir     = "/home/${settings.username}/workspace/nixlap";
+    hostname     = settings.hostname;
+    defaultChain = "local";          # local chain is proven; remote needs Hermes/API
+    local.model  = "qwen2.5:3b";
+    # Extra modules (system, power, performance, bluetooth, updates, security)
+    # discovered via entry points from the nixadmin-extras package.
+    extraModules = [ inputs.nixadmin.packages.${pkgs.system}.nixadmin-extras ];
+    # remote.model = "claude-sonnet-4-5";  # used once a Hermes proxy / API base is set
+    # remote.base  = "http://localhost:4000";
+  };
+
+  networking.hostName = settings.hostname;
+  networking.networkmanager.enable = true;
+
+  time.timeZone = settings.timezone;
+
+  i18n.defaultLocale = settings.locale;
+
+  users.users.root.hashedPassword = "!";
+
+  users.users.${settings.username} = {
+    isNormalUser = true;
+    description = settings.fullName;
+    extraGroups = [ "networkmanager" "wheel" "video" "input" ];
+    shell = pkgs.zsh;
+    hashedPassword = settings.hashedPassword;
+  };
+
+  # Enable Home Manager
+  home-manager = {
+    extraSpecialArgs = { inherit inputs settings; };
+    users.${settings.username} = import ../../modules/home-manager/default.nix;
+    useGlobalPkgs = true;
+    useUserPackages = true;
+  };
+
+  programs.zsh.enable = true;
+
+  # Enable Steam
+  programs.steam.enable = true;
+  programs.steam.gamescopeSession.enable = true;
+
+  # Enable Podman
+  virtualisation.podman.enable = true;
+
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = false;
+    settings = {
+      General = {
+        # Shows battery charge of connected devices on supported
+        Experimental = true;
+        # When enabled other devices can connect faster to us, however
+        # the tradeoff is increased power consumption.
+        FastConnectable = false;
+      };
+    };
+  };
+
+  # WARNING: Do NOT change this. It is NOT your NixOS version — it controls backward compatibility.
+  # See: https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+  system.stateVersion = "25.11";
+}

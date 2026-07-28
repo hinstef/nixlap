@@ -1,0 +1,24 @@
+# NOTE: This repo expects a private repo containing settings.nix and hardware-configuration.nix.
+# Fork or create your own private repo and update the url for the "private" input in flake.nix.
+# Your private repo should contain:
+#   - settings.nix  (copy this file, fill in real values)
+#   - hardware-configuration.nix  (copy from /etc/nixos/ after running nixos-generate-config)
+
+{
+  # User account
+  username = "your-username";
+  fullName = "Your Name";
+  email = "you@example.com";
+  hashedPassword = "";  # Generate with: mkpasswd -m yescrypt
+
+  # System
+  hostname = "nixos";
+  timezone = "America/New_York";
+  locale = "en_US.UTF-8";
+
+  # Hibernation (requires a swapfile — see modules/nixos/common.nix for setup instructions)
+  # Set to true only after creating a swapfile and finding the resume offset.
+  hibernate = false;
+  resumeDevice = "/dev/mapper/cryptroot";
+  resumeOffset = "";
+}
