@@ -9,7 +9,9 @@
   username = "your-username";
   fullName = "Your Name";
   email = "you@example.com";
-  hashedPassword = "";  # Generate with: mkpasswd -m yescrypt
+  # NOTE: no password hash here — this repo is copied into /nix/store at 0444,
+  # so anything placed in it is readable by every local process. The hash goes in
+  # secrets/users.yaml (sops-encrypted) and is read via hashedPasswordFile.
 
   # System
   hostname = "nixos";

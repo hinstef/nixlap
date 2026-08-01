@@ -1,4 +1,4 @@
-{ pkgs, inputs, settings, ... }:
+{ pkgs, config, inputs, settings, ... }:
 
 {
   # Pull ollama-vulkan from nixpkgs master (0.30.x) — unstable is still on 0.24.
@@ -13,7 +13,6 @@
     ../../modules/nixos/common.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix
-    ../../modules/nixos/claude-rebuild.nix
     # ../../modules/nixos/ai-sysadmin.nix  # v1 — kept for reference, not imported
     # nixadmin module is now provided by the nixadmin flake input
   ];
@@ -46,7 +45,9 @@
     description = settings.fullName;
     extraGroups = [ "networkmanager" "wheel" "video" "input" ];
     shell = pkgs.zsh;
-    hashedPassword = settings.hashedPassword;
+    # Never `hashedPassword` from a nix value — that lands world-readable (0444)
+    # in /nix/store via users-groups.json. sops decrypts to /run/secrets-for-users.
+    hashedPasswordFile = config.sops.secrets.steve-password.path;
   };
 
   # Enable Home Manager
