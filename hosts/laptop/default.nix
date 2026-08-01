@@ -13,8 +13,7 @@
     ../../modules/nixos/common.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix
-    # ../../modules/nixos/ai-sysadmin.nix  # v1 — kept for reference, not imported
-    # nixadmin module is now provided by the nixadmin flake input
+    # The nixadmin module comes from the nixadmin flake input (see flake.nix).
   ];
 
   services.nixadmin = {

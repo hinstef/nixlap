@@ -12,10 +12,6 @@
 
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
-    plasma-manager.url = "github:nix-community/plasma-manager";
-    plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
-    plasma-manager.inputs.home-manager.follows = "home-manager";
-
     nix-pi.url = "github:hinstef/nix-pi";
     nix-pi.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -35,7 +31,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, nix-flatpak, plasma-manager, nix-pi, nixadmin, nixpkgs-master, private, ... }@inputs:
+  outputs = { nixpkgs, private, ... }@inputs:
     let
       settings = import "${private}/settings.nix";
     in
@@ -44,10 +40,10 @@
         specialArgs = { inherit inputs settings; };
         modules = [
           ./hosts/laptop/default.nix
-          home-manager.nixosModules.home-manager
-          sops-nix.nixosModules.sops
-          nix-flatpak.nixosModules.nix-flatpak
-          nixadmin.nixosModules.default
+          inputs.home-manager.nixosModules.home-manager
+          inputs.sops-nix.nixosModules.sops
+          inputs.nix-flatpak.nixosModules.nix-flatpak
+          inputs.nixadmin.nixosModules.default
         ];
       };
     };

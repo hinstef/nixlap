@@ -7,14 +7,8 @@
   home.homeDirectory = "/home/${settings.username}";
 
   home.packages = with pkgs; [
-    (writeShellScriptBin "nixadmin-apps" ''
-      echo "=== Nix packages ==="
-      grep -E '^\s+[a-z][a-zA-Z0-9_.-]+\s*$' /home/steve/workspace/nixlap/modules/home-manager/default.nix \
-        | sed 's/^\s*//'
-      echo ""
-      echo "=== Flatpak apps ==="
-      flatpak list --app --columns=name,application
-    '')
+    # nixadmin-apps comes from the nixadmin flake module (environment.systemPackages);
+    # the local copy shadowed it on PATH and used bare grep/sed/flatpak lookups.
     thunderbird
     firefox
     google-chrome
