@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785168662,
-        "narHash": "sha256-kGJTc0oEUQuEwV66lSlMxYtOEtpk9N/HS43k+rFAvs8=",
+        "lastModified": 1785531816,
+        "narHash": "sha256-vkMnV0JIyw+g/NmcfoajlGaAO+9a0ezia+FZohQJrik=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "cbb77679b3d992c8b62f884cd3a84af534a28621",
+        "rev": "bf9ce9fec78f95f374e8dd3b503863a3ec128ebe",
         "type": "github"
       },
       "original": {
@@ -78,11 +78,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1785090369,
-        "narHash": "sha256-m0pDuRJG7EDo9ri+4Ksu83VsI+PlxNC9lNBfydejce4=",
+        "lastModified": 1785454630,
+        "narHash": "sha256-LQy14TZp77TwbQf40gg1V3jo8FwJG0jGDkAH+zRHqg8=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "624af665418d3c65d544145b4d34ad696439570e",
+        "rev": "1559d3daa3ecc813a650b79375ea61b6741b8746",
         "type": "github"
       },
       "original": {
@@ -94,11 +94,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1785196122,
-        "narHash": "sha256-MYXbjj/DdwPg4Sg/CbbvUAWzaGCFjS7pQMcRzGgA+uY=",
+        "lastModified": 1785602668,
+        "narHash": "sha256-nqm5N4Agr0bG+3Xj7z20ExklIzlb5uDXbgmS4TUQ468=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0ac2ce938d4afdb22447935ef654023f3ae06749",
+        "rev": "32d4c4165ebfb1c5873059a459262b5b858489e8",
         "type": "github"
       },
       "original": {
@@ -134,11 +134,11 @@
     "private": {
       "flake": false,
       "locked": {
-        "lastModified": 1774043645,
-        "narHash": "sha256-3S6RVV4S4okgVHYXAXzGr8KO1TUX8DQNISTe7gptvFM=",
+        "lastModified": 1785604997,
+        "narHash": "sha256-JE/k4zqznsUB7wlpj9B1HvVztf6ZknCboohE641wJBE=",
         "ref": "refs/heads/main",
-        "rev": "79243b2c03ddfbee144f82069f4b020618b75c68",
-        "revCount": 2,
+        "rev": "22ab1938e1a8b02a8af5ed71e6cb6e04249bdaeb",
+        "revCount": 3,
         "type": "git",
         "url": "ssh://git@github.com/hinstef/nixlap-private"
       },
