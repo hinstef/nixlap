@@ -41,6 +41,7 @@
     rendercv
     mission-center
     gnome-disk-utility
+    telegram-desktop
   ];
 
   programs.zsh = {

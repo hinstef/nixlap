@@ -14,15 +14,20 @@
     options = "--delete-older-than 7d";
   };
 
-  # Auto upgrade
+  # Auto upgrade. Rebuilds from the working tree, NOT from inputs.self.outPath —
+  # that is a store copy frozen at the last manual switch, so nightly runs used to
+  # drift ahead of the repo and any later repo-driven switch silently rolled the
+  # system back. No --update-input here on purpose: it would have this root job
+  # rewrite flake.lock in a user-owned repo. Move nixpkgs with `nix flake update`.
+  # The path: prefix bypasses nix's git-ownership check for root, as nixadmin-helper does.
   system.autoUpgrade = {
     enable = true;
-    flake = inputs.self.outPath;
-    flags = [
-      "--update-input"
-      "nixpkgs"
-      "-L" # print build logs
-    ];
+    flake = "path:/home/${settings.username}/workspace/nixlap";
+    # The module appends --upgrade unless this is false, and nixos-rebuild-ng
+    # turns that into a `nix flake update nixpkgs` -- i.e. root rewriting the
+    # lock in a user-owned repo, which is what this whole arrangement avoids.
+    upgrade = false;
+    flags = [ "-L" ]; # print build logs
     dates = "02:00";
     randomizedDelaySec = "45min";
   };
