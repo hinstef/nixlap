@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, settings, ... }:
 
 {
   # sops-nix. The age key lives outside the store at /var/lib/sops-nix/key.txt
@@ -11,7 +11,8 @@
   # neededForUsers decrypts into /run/secrets-for-users *before* user activation,
   # which is what makes users.users.*.hashedPasswordFile work at all. Secrets
   # declared this way are root-only by design, so owner/mode must not be set.
-  sops.secrets.steve-password = {
+  # The key in secrets/users.yaml must be named "<username>-password".
+  sops.secrets."${settings.username}-password" = {
     neededForUsers = true;
   };
 

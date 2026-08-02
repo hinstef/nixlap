@@ -29,10 +29,14 @@
 
   outputs = { nixpkgs, private, ... }@inputs:
     let
-      settings = import "${private}/settings.nix";
-    in
-    {
-      nixosConfigurations.${settings.hostname} = nixpkgs.lib.nixosSystem {
+      userSettings = import "${private}/settings.nix";
+      settings = userSettings // {
+        # Single source of truth for the working tree. system.autoUpgrade and
+        # services.nixadmin both rebuild from this path and must not disagree —
+        # if they do, whichever ran last silently reverts the other.
+        flakeDir = userSettings.flakeDir or "/home/${userSettings.username}/workspace/nixlap";
+      };
+      laptop = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs settings; };
         modules = [
           ./hosts/laptop/default.nix
@@ -42,5 +46,15 @@
           inputs.nixadmin.nixosModules.default
         ];
       };
+    in
+    {
+      nixosConfigurations.${settings.hostname} = laptop;
+
+      # `nix flake check` builds this. The nightly upgrade runs it as a preflight
+      # before anything touches the running system — see modules/nixos/auto-upgrade.nix.
+      # It is the same derivation nixos-rebuild would build, so the check costs
+      # nothing extra: the switch that follows reuses it from the store.
+      checks.${laptop.pkgs.stdenv.hostPlatform.system}.toplevel =
+        laptop.config.system.build.toplevel;
     };
 }

@@ -6,47 +6,53 @@
   home.username = settings.username;
   home.homeDirectory = "/home/${settings.username}";
 
+  # nixadmin-apps is deliberately absent: it comes from the nixadmin flake module
+  # via environment.systemPackages, and a copy here shadowed it on PATH.
+  # Steam is system-wide (hosts/laptop/default.nix) because it needs udev rules.
   home.packages = with pkgs; [
-    # nixadmin-apps comes from the nixadmin flake module (environment.systemPackages);
-    # the local copy shadowed it on PATH and used bare grep/sed/flatpak lookups.
-    thunderbird
+    # Desktop apps
     firefox
     google-chrome
-    vscode
-    spotify
-    podman-desktop
-    usbutils
-    # Steam is installed system-wide for udev rules, but we can add utils here if needed.
-    inputs.nix-pi.packages.${pkgs.stdenv.hostPlatform.system}.default
-    gemini-cli
-    beads # bd — git-backed issue tracker
+    thunderbird
     signal-desktop
+    telegram-desktop
+    spotify
     nextcloud-client
+    stirling-pdf-desktop
+    rendercv
+
+    # System tools
+    mission-center
+    gnome-disk-utility
+    usbutils
+    tree
+
+    # Shell / editors
+    vscode
     zellij # terminal multiplexer
     claude-code
-    # Kubernetes
+    gemini-cli
+    beads # bd — git-backed issue tracker
+    inputs.nix-pi.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+    # Containers & Kubernetes
+    podman-desktop
+    podman-compose
     kubectl
     k9s
     kubernetes-helm
-    # Containers
-    podman-compose
+
     # Python
     python3
-    tree
     uv
     ruff
+
     # Data
     jq
-    stirling-pdf-desktop
-    rendercv
-    mission-center
-    gnome-disk-utility
-    telegram-desktop
   ];
 
   programs.zsh = {
     enable = true;
-    shellAliases = {};
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";

@@ -1,5 +1,10 @@
-{ pkgs, lib, inputs, settings, ... }:
+{ pkgs, lib, settings, ... }:
 
+let
+  # What the lid and the power key do. Hibernating without a swapfile just fails,
+  # so this falls back to plain suspend unless settings.hibernate is set.
+  sleepAction = if settings.hibernate then "suspend-then-hibernate" else "suspend";
+in
 {
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -14,23 +19,7 @@
     options = "--delete-older-than 7d";
   };
 
-  # Auto upgrade. Rebuilds from the working tree, NOT from inputs.self.outPath —
-  # that is a store copy frozen at the last manual switch, so nightly runs used to
-  # drift ahead of the repo and any later repo-driven switch silently rolled the
-  # system back. No --update-input here on purpose: it would have this root job
-  # rewrite flake.lock in a user-owned repo. Move nixpkgs with `nix flake update`.
-  # The path: prefix bypasses nix's git-ownership check for root, as nixadmin-helper does.
-  system.autoUpgrade = {
-    enable = true;
-    flake = "path:/home/${settings.username}/workspace/nixlap";
-    # The module appends --upgrade unless this is false, and nixos-rebuild-ng
-    # turns that into a `nix flake update nixpkgs` -- i.e. root rewriting the
-    # lock in a user-owned repo, which is what this whole arrangement avoids.
-    upgrade = false;
-    flags = [ "-L" ]; # print build logs
-    dates = "02:00";
-    randomizedDelaySec = "45min";
-  };
+  # Nightly upgrades live in modules/nixos/auto-upgrade.nix.
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10; # Prevent /boot from filling up
@@ -59,12 +48,10 @@
     fileSystems = [ "/" ];
   };
 
-  # Fingerprint reader
+  # Fingerprint reader. security.pam.services.*.fprintAuth already defaults to
+  # services.fprintd.enable, so sudo/login/greeter need no per-service opt-in —
+  # only deviations from that default are worth writing down (see cosmic.nix).
   services.fprintd.enable = true;
-
-  security.pam.services.sddm.fprintAuth = true;
-  security.pam.services.sudo.fprintAuth = true;
-  security.pam.services.login.fprintAuth = true;
 
   # Polkit
   security.polkit.enable = true;
@@ -74,9 +61,9 @@
   services.power-profiles-daemon.enable = true;
 
   services.logind.settings.Login = {
-    HandlePowerKey = if settings.hibernate then "suspend-then-hibernate" else "suspend";
-    HandleLidSwitch = if settings.hibernate then "suspend-then-hibernate" else "suspend";
-    HandleLidSwitchExternalPower = if settings.hibernate then "suspend-then-hibernate" else "suspend";
+    HandlePowerKey = sleepAction;
+    HandleLidSwitch = sleepAction;
+    HandleLidSwitchExternalPower = sleepAction;
     LidSwitchIgnoreInhibited = "yes";
   };
 

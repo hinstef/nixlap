@@ -22,17 +22,42 @@ git and outside the store. **Back it up**; without it a rebuild cannot decrypt
 
 ```bash
 sops secrets/users.yaml      # edit secrets
-mkpasswd -m yescrypt         # new login hash -> steve-password
+mkpasswd -m yescrypt         # new login hash -> <username>-password
 ```
+
+The login-password key must be named `<username>-password`; `modules/nixos/secrets.nix`
+derives it from `settings.username` rather than hardcoding it.
 
 ## Build
 
 ```bash
-nix build .#nixosConfigurations.$(hostname).config.system.build.toplevel  # eval check, no sudo
+nix flake check                                                          # build check, no sudo
 sudo nixos-rebuild switch --flake .#$(hostname)
 ```
 
 The flake output is named after `settings.hostname`, so it is whatever you set.
+`checks` builds the host's `system.build.toplevel`, so `nix flake check` is a full
+build, not just an eval.
+
+Note `nix flake check` and `.#` read the *committed* tree and ignore untracked
+files — a new module is invisible to them until at least `git add -N`.
+
+## Nightly upgrades
+
+`modules/nixos/auto-upgrade.nix` rebuilds at 02:00 (+ up to 45 min jitter) from the
+working tree at `settings.flakeDir`, not from a flake input. The `path:` ref copies
+the directory verbatim, so **uncommitted edits are picked up and switched to** —
+that is intended, not an oversight.
+
+`ExecStartPre` runs `nix flake check` against that same `path:` ref first, so the
+gate covers the exact tree about to be activated, work in progress included. If it
+does not build, the unit fails and the running system is left untouched. It is the
+same derivation the switch then reuses from the store, so it costs nothing beyond
+the build that was going to happen anyway.
+
+Missed runs are not lost: `system.autoUpgrade.persistent` defaults to true, so a
+laptop that was off or asleep at 02:00 runs the upgrade shortly after it next boots.
+There is no AC-power condition — it runs on battery too.
 
 ## Install
 

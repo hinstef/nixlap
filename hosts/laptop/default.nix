@@ -5,6 +5,7 @@
     "${inputs.private}/hardware-configuration.nix"
     ../../modules/nixos/cosmic.nix
     ../../modules/nixos/common.nix
+    ../../modules/nixos/auto-upgrade.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix
     # The nixadmin module comes from the nixadmin flake input (see flake.nix).
@@ -13,7 +14,7 @@
   services.nixadmin = {
     enable       = true;
     user         = settings.username;
-    flakeDir     = "/home/${settings.username}/workspace/nixlap";
+    flakeDir     = settings.flakeDir;
     hostname     = settings.hostname;
     defaultChain = "local";          # local chain is proven; remote needs Hermes/API
     local.model  = "qwen2.5:3b";
@@ -40,7 +41,7 @@
     shell = pkgs.zsh;
     # Never `hashedPassword` from a nix value — that lands world-readable (0444)
     # in /nix/store via users-groups.json. sops decrypts to /run/secrets-for-users.
-    hashedPasswordFile = config.sops.secrets.steve-password.path;
+    hashedPasswordFile = config.sops.secrets."${settings.username}-password".path;
   };
 
   # Enable Home Manager
