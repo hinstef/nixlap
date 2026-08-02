@@ -5,7 +5,6 @@
     "${inputs.private}/hardware-configuration.nix"
     ../../modules/nixos/cosmic.nix
     ../../modules/nixos/common.nix
-    ../../modules/nixos/auto-upgrade.nix
     ../../modules/nixos/flatpak.nix
     ../../modules/nixos/secrets.nix
     # The nixadmin module comes from the nixadmin flake input (see flake.nix).

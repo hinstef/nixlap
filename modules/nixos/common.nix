@@ -19,8 +19,6 @@ in
     options = "--delete-older-than 7d";
   };
 
-  # Nightly upgrades live in modules/nixos/auto-upgrade.nix.
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10; # Prevent /boot from filling up
   boot.loader.efi.canTouchEfiVariables = true;

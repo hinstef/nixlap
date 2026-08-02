@@ -42,22 +42,30 @@ build, not just an eval.
 Note `nix flake check` and `.#` read the *committed* tree and ignore untracked
 files — a new module is invisible to them until at least `git add -N`.
 
-## Nightly upgrades
+## Updates are deliberate
 
-`modules/nixos/auto-upgrade.nix` rebuilds at 02:00 (+ up to 45 min jitter) from the
-working tree at `settings.flakeDir`, not from a flake input. The `path:` ref copies
-the directory verbatim, so **uncommitted edits are picked up and switched to** —
-that is intended, not an oversight.
+There is no `system.autoUpgrade`. It was removed on purpose:
 
-`ExecStartPre` runs `nix flake check` against that same `path:` ref first, so the
-gate covers the exact tree about to be activated, work in progress included. If it
-does not build, the unit fails and the running system is left untouched. It is the
-same derivation the switch then reuses from the store, so it costs nothing beyond
-the build that was going to happen anyway.
+- With `upgrade = false` it never touched `flake.lock`, so it could not pull a
+  security patch — packages only move on a manual `nix flake update`. Its only
+  real job was re-applying local edits overnight, and on most nights it rebuilt
+  to the store path that was already current.
+- It gave an unattended root job a build of `settings.flakeDir`, a directory the
+  login user can write. A NixOS activation script runs as root, so anything able
+  to write there — a bad postinstall, a browser exploit, one of the agents that
+  edit this repo by design — got root on a timer, unprompted.
 
-Missed runs are not lost: `system.autoUpgrade.persistent` defaults to true, so a
-laptop that was off or asleep at 02:00 runs the upgrade shortly after it next boots.
-There is no AC-power condition — it runs on battery too.
+Removing it is not a defence against a compromised account: `nixadmin-helper`
+still switches on request. It removes the *unattended* path, so root activation
+now follows something a human actually started.
+
+To update:
+
+```bash
+nix flake update          # move nixpkgs et al; commit the lock
+nix flake check           # full build of the new closure
+sudo nixos-rebuild switch --flake .#$(hostname)
+```
 
 ## Install
 

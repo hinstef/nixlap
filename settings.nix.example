@@ -13,9 +13,8 @@
   # so anything placed in it is readable by every local process. The hash goes in
   # secrets/users.yaml (sops-encrypted) and is read via hashedPasswordFile.
 
-  # Optional. Where this repo is checked out; system.autoUpgrade and
-  # services.nixadmin both rebuild from it. Defaults to
-  # /home/<username>/workspace/nixlap (see flake.nix).
+  # Optional. Where this repo is checked out; services.nixadmin rebuilds from
+  # it. Defaults to /home/<username>/workspace/nixlap (see flake.nix).
   # flakeDir = "/home/your-username/workspace/nixlap";
 
   # System
